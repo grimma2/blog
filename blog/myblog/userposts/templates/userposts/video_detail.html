@@ -1,0 +1,95 @@
+{% load embed_video_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ video.title }}</title>
+    <link href="{% static 'userposts/css/style.css' %}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<ul>
+    <li>
+        <a href="{% url 'video_detail' slug=video.slug %}">
+            {% if video.video %}
+                <video controls width="250">
+                  <source src="{{ video.video.url }}" type="video/mp4">
+                  Ваш браузер не поддерживает встроенные видео :(
+                </video>
+            {% else %}
+                {% video video.import_video_url 'small' %}
+            {% endif %}
+            {{ video.title }}
+            {{ video.description }}
+            {{ video.views }}
+            {{ video.likes }}
+            {{ video.dislikes }}
+        </a>
+    {% if like %}
+        <input id="like_link" type="checkbox" checked>
+    {% else %}
+        <input id="like_link" type="checkbox">
+    {% endif %}
+    <img src="{% static 'userposts/images/like.png' %}" height="20" width="20">
+    {% if dislike %}
+        <input id="dislike_link" type="checkbox" checked>
+    {% else %}
+        <input id="dislike_link" type="checkbox">
+    {% endif %}
+    <img src="{% static 'userposts/images/dislike.png' %}" height="20" width="20">
+    </li>
+    <li>
+        {% for comment in comments %}
+            {{ user.username }}
+            {{ comment.text }}
+        {% endfor %}
+    </li>
+    <li>
+        <form action="{% url 'create_comment' obj_slug=video.slug model='Video' %}" method="post">
+            {% csrf_token %}
+
+            <input type="text" name="text">
+        </form>
+    </li>
+</ul>
+<p>
+    {% include 'userposts/menu.html' %}
+</p>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $('#like_link').on('click', function () {
+        $('#like_link[type=checkbox]').each(function () {
+            if ($(this).prop('checked')) {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'user_action' act='like' obj_slug=video.slug model='Video' do='add' %}"
+                });
+            } else {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'user_action' act='like' obj_slug=video.slug model='Video' do='reduce' %}"
+                });
+            }
+        });
+    });
+
+    $('#dislike_link').on('click', function () {
+        $('#dislike_link[type=checkbox]').each(function () {
+            if ($(this).prop('checked')) {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'user_action' act='dislike' obj_slug=video.slug model='Video' do='add' %}"
+                });
+            } else {
+                $.ajax({
+                    method: "GET",
+                    url: "{% url 'user_action' act='dislike' obj_slug=video.slug model='Video' do='reduce' %}"
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

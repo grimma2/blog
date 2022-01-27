@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список видео</title>
+</head>
+<body>
+<div class="objects">
+    {% for video in videos %}
+        {% if forloop.last %}
+            <div style="height: 50vh" id="last-object-id" data-objectid="{{ video.id }}">
+        {% else %}
+            <div style="height: 50vh">
+        {% endif %}
+            <a href="{% url 'video_detail' slug=video.slug %}">
+                {% if video.video %}
+                    <img src="{{ video.video.url }}">
+                {% endif %}
+                {{ video.title }}
+                {{ video.description }}
+                {{ video.likes }}
+                {{ video.dislikes }}
+            </a>
+            </div>
+{% endfor %}
+</div>
+<p>
+    {% include 'userposts/menu.html' %}
+</p>
+    {% include 'userposts.load_js.html' with model_='Video' %}
+</body>
+</html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Список постов</title>
+</head>
+<body>
+{% for post in posts %}
+    <a href="{% url 'post_detail' slug=post.slug %}">
+        {{ post.title }}
+        {{ post.text }}
+    </a>
+{% endfor %}
+<p>
+    {% include 'userposts/menu.html' %}
+</p>
+{% include 'userposts.load_js.html' with model_='Post' %}
+</body>
+</html>

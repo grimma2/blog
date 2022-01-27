@@ -1,0 +1,11 @@
+{% if request.user.is_authenticated %}
+    <button type="submit"><a href="{% url 'post_form' %}">Создать пост</a></button>
+    <button type="submit"><a href="{% url 'video_form' %}">Создать видео</a></button>
+    <a href="{% url 'logout' %}">Выйти</a>
+    {{ request.user.username }}
+{% else %}
+    <a href="{% url 'register' %}">Регистрация</a>
+    <a href="{% url 'login' %}">Вход</a>
+{% endif %}
+<a href="{% url 'videos' %}">Видео</a>
+<a href="{% url 'posts' %}">Посты</a>

@@ -1,0 +1,61 @@
+
+<script>
+window.onscroll = function(ev) {
+    if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+        let dta = $('#last-object-id')
+        let datam = dta.attr('data-objectid')
+        let adata = {last_id: datam, {{ model_ }}: ''}
+    	$.ajax({
+    			method: "GET",
+    			dataType: "json",
+    			data: adata,
+    			url: "{% url 'load_objects' %}",
+    			success: function success_load (data) {
+                    let result = data['data']
+                    if (result) {
+                        $.each(result['values'], function ( key, obj ) {
+                            if (obj['last-object']) {
+                                add_object('last', obj)
+                            } else {
+                                add_object('no_last', obj)
+                            };
+                        });
+                    } else {
+                        console.log('no objects')
+                    };
+                }
+        });
+    };
+};
+
+
+function add_object (status_object, res) {
+	if (status_object = 'last') {
+        if ($('#last-object-id').length > 0) {
+            $('#last-object-id').removeAttr('data-objectid')
+            $('#last-object-id').removeAttr('id')
+        };
+		$('.objects').append(
+			'<div id="last-object-id" data-objectid="'
+			 + res['id'] + '">'
+			 + '<a href="' + res['url'] + '">'
+			 + res['title']
+			 + res['text']
+			 + res['likes']
+			 + res['dislikes']
+			 + '</a>'
+			 + '</div>'
+		)
+	} else {
+	    $('.objects').append(
+	    '<div>'
+	     + '<a href="' + res['url'] + '">'
+	     + res['title']
+	     + res['text']
+	     + res['likes']
+	     + res['dislikes']
+	     + '</a>'
+	     + '</div>')
+	};
+};
+</script>

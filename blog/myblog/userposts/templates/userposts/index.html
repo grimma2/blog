@@ -1,0 +1,57 @@
+{% load embed_video_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+</head>
+<body>
+<ul>
+    <li class="objects">
+        {% for video in videos %}
+            <a href="{% url 'video_detail' slug=video.slug %}">
+                <div style="height: 50vh">
+                    {% if video.video %}
+                        <video controls width="250">
+                          <source src="{{ video.video.url }}" type="video/mp4">
+                          Ваш браузер не поддерживает встроенные видео :(
+                        </video>
+                    {% else %}
+                        {% video video.import_video_url 'small' %}
+                    {% endif %}
+                    {{ video.title }}
+                    {{ video.description }}
+                    {{ video.views }}
+                    {{ video.likes }}
+                    {{ video.dislikes }}
+                </div>
+            </a>
+        {% endfor %}
+        {% for post in posts %}
+            <a href="{% url 'post_detail' slug=post.slug %}">
+                {% if forloop.last %}
+                    <div style="height: 50vh" id="last-object-id" data-objectid="{{ post.id }}">
+                {% else %}
+                    <div style="height: 50vh">
+                {% endif %}
+                    {{ post.title }}
+                    {{ post.text }}
+                    {{ post.views }}
+                    {{ post.likes }}
+                    {{ post.dislikes }}
+                    </div>
+            </a>
+        {% endfor %}
+    </li>
+    <li>
+        {% include 'userposts/menu.html' %}
+    </li>
+</ul>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+{% include 'userposts/load_js.html' with model_='Post' %}
+
+</body>
+</html>
